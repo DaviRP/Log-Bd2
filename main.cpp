@@ -14,20 +14,30 @@ class variaveis{
     variaveis(string nome, double valor){
         this->nome=nome;
         valores.push_front(valor);
-
     }
     void attValores(double valor){
         valores.push_front(valor);
     }
+    void printHistorico(){
+        list<double>::iterator it;
+        for(it=this->valores.begin();it!=this->valores.end();it++){
+            cout<< *it <<","; 
+        }
+        cout<< "\n"<<endl;
+    }
+    void lineReading(string s){
+        this -> nome=string.at(0);
+    }
 };
 
+    
 int main(){
 
     ifstream logFile("log.txt");
     ifstream values("entrada.txt");
 
     list<string> logList;
-    list<string> varList;
+    list<variaveis> varList;
     list<string>::iterator it;
 
     
@@ -42,15 +52,12 @@ int main(){
         logList.push_front(linha);
     }
 
-    while (varList >> linha){
-            varList.push_back(linha);        
+    while (values >> linha){
+        
     }
 
-     for(it = varList.begin();it!=varList.end();it++){
 
-        cout<<*it<<endl;
 
-    }
     logFile.close();
 
 

@@ -1,0 +1,45 @@
+ /* ==================================================
+      Step 1: identify the commited transactions
+      ================================================== */
+   Scan the redo log backwards until first <START CKPT(T1, T2, ..., Tk) record:
+   {
+      identify the committed transaction   // There is a COMMIT record
+      identify the UNcommitted transaction // No COMMIT record
+   }
+
+   /* ==================================================
+      Step 2a: redo the commited transactions
+      ================================================== */
+   Scan the redo log backwards until first <START CKPT(T1, T2, ..., Tk) record
+
+   Starting from this point, scan the redo log forewards
+   {
+      For ( each < T, A, v, w > where T is commited ) do
+      {
+         Update A with the (after) value w;    // Redo the action !!!
+      }
+   }
+
+   /* =================================================================
+      Step 2b: undo the UNcommited transactions
+
+      *******************************************************************
+      **** Tx = the earliest uncommitted transaction T1, T2, ..., Tk  ****
+      ================================================================== */
+   Scan the redo log backwards until (earliest uncomitted) <START Tx> record
+   {
+      For ( each < T, A, v, w > where T is UNcommited ) do
+      {
+         Update A with the (before) value v;    // Undo the action !!!
+      }
+   }
+
+   /* =========================================================
+      Step 3: mark the uncommited tranasactions as failed....
+      ========================================================= */
+   For ( each T that is uncommited ) do
+   {
+      Write <ABORT T> to log;
+   }
+
+   Flush-Log
